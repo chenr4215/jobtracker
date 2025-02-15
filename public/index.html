@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>📁 职位追踪器</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Firebase 初始化 -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+    import { getDatabase, ref, set, onValue, remove, update } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-database.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDO5mM8eJYe-KRenku_B_mu8j6coaCnsCI",
+      authDomain: "job-tracker-62cd9.firebaseapp.com",
+      databaseURL: "https://job-tracker-62cd9-default-rtdb.firebaseio.com",
+      projectId: "job-tracker-62cd9",
+      storageBucket: "job-tracker-62cd9.appspot.com",
+      messagingSenderId: "1048989090470",
+      appId: "1:1048989090470:web:a3ab86c1cb73627511aa67"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    // 挂载到全局对象，方便在其他脚本中调用
+    window.firebaseApp = { db, auth, provider, ref, set, onValue, remove, update, signInWithPopup, signOut };
+    console.log("Firebase 初始化完成");
+  </script>
+</head>
+<body>
+  <div class="container">
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+      <div class="logo">
+        <h1>JobTracker</h1>
+      </div>
+      <div class="auth-buttons">
+        <button id="loginBtn" onclick="loginWithGoogle()">🚪 使用 Google 登录</button>
+        <button id="logoutBtn" onclick="logout()" style="display: none;">🚪 注销</button>
+        <span id="userInfo" style="display: none;"></span>
+      </div>
+      <h2>添加职位</h2>
+      <div class="form">
+        <input type="text" id="jobTitle" placeholder="职位名称" required>
+        <input type="text" id="company" placeholder="公司名称" required>
+        <input type="text" id="location" placeholder="地点">
+        <input type="date" id="date">
+        <button onclick="addJob()">➕ 添加职位</button>
+      </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+      <h1>📁 职位追踪器</h1>
+      <input type="text" id="search" placeholder="搜索职位...">
+      <div class="table-card">
+        <table id="jobTable">
+          <thead>
+            <tr>
+              <th onclick="sortTable('title')">职位名称 <span id="sortTitle">↕</span></th>
+              <th onclick="sortTable('company')">公司 <span id="sortCompany">↕</span></th>
+              <th onclick="sortTable('location')">地点 <span id="sortLocation">↕</span></th>
+              <th onclick="sortTable('date')">申请日期 <span id="sortDate">↕</span></th>
+              <th>状态</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

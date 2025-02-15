@@ -1,0 +1,160 @@
+/* 全局样式 */
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background: #F0F2F5;
+}
+
+/* 主容器布局 */
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* 侧边栏 */
+.sidebar {
+    width: 250px;
+    background: linear-gradient(135deg, #00F260, #0575E6);
+    padding: 20px;
+    color: #fff;
+    box-sizing: border-box;
+}
+
+.logo h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    text-align: center;
+}
+
+/* 登录/注销按钮 */
+.auth-buttons {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.auth-buttons button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    transition: background 0.3s;
+}
+
+.auth-buttons button:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+/* 添加职位表单 */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.form input,
+.form button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.form input {
+    outline: none;
+}
+
+.form button {
+    background: #FF6EC7;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.form button:hover {
+    background: #FF4EB4;
+}
+
+/* 主内容区 */
+.main-content {
+    flex: 1;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.main-content h1 {
+    margin-top: 0;
+    font-size: 2rem;
+}
+
+/* 搜索框 */
+#search {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+/* 表格卡片容器 */
+.table-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* 表格样式 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background: #f9f9f9;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.3s;
+}
+
+th:hover {
+    background: #f1f1f1;
+}
+
+tr:hover td {
+    background: #fafafa;
+}
+
+/* 状态按钮 */
+.status-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.2s;
+    color: #fff;
+}
+
+.status-btn:hover {
+    transform: scale(1.05);
+}
+
+.status-btn.applied { background: #2196F3; }
+.status-btn.interview { background: #FF9800; }
+.status-btn.rejected { background: #F44336; }
+.status-btn.accepted { background: #4CAF50; }
