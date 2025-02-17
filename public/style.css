@@ -231,3 +231,13 @@ tr:hover td {
         font-size: 12px;
     }
 }
+
+.form textarea {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 60px;
+}

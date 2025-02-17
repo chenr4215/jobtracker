@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>📁 职位追踪器</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Firebase 初始化 -->
+  <!-- Firebase 初始化脚本 -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
     import { getDatabase, ref, set, onValue, remove, update } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-database.js";
@@ -31,29 +31,30 @@
     console.log("Firebase 初始化完成");
   </script>
 </head>
-
 <body>
   <div class="container">
-    
     <!-- 侧边栏 -->
     <div class="sidebar">
-      <div class="logo">
-        <h1>JobTracker</h1>
+      <div class="sidebar-top">
+        <div class="logo">
+          <h1>JobTracker</h1>
+        </div>
+        <div class="auth-buttons">
+          <button id="loginBtn" onclick="loginWithGoogle()">🚪 使用 Google 登录</button>
+          <button id="logoutBtn" onclick="logout()" style="display: none;">🚪 注销</button>
+          <span id="userInfo" style="display: none;"></span>
+        </div>
+        <h2>添加职位</h2>
+        <div class="form">
+          <input type="text" id="jobTitle" placeholder="职位名称" required>
+          <input type="text" id="company" placeholder="公司名称" required>
+          <input type="text" id="location" placeholder="地点">
+          <input type="date" id="date">
+          <!-- 新增：备注输入区域 -->
+          <textarea id="jobNote" placeholder="备注/标签 (可选)"></textarea>
+          <button onclick="addJob()">➕ 添加职位</button>
+        </div>
       </div>
-      <div class="auth-buttons">
-        <button id="loginBtn" onclick="loginWithGoogle()">🚪 使用 Google 登录</button>
-        <button id="logoutBtn" onclick="logout()" style="display: none;">🚪 注销</button>
-        <span id="userInfo" style="display: none;"></span>
-      </div>
-      <h2>添加职位</h2>
-      <div class="form">
-        <input type="text" id="jobTitle" placeholder="职位名称" required>
-        <input type="text" id="company" placeholder="公司名称" required>
-        <input type="text" id="location" placeholder="地点">
-        <input type="date" id="date">
-        <button onclick="addJob()">➕ 添加职位</button>
-      </div>
-      <!-- 新增：导出按钮，放在侧边栏中 -->
       <div class="sidebar-bottom">
         <button onclick="exportData()">导出 CSV</button>
       </div>
@@ -71,6 +72,8 @@
               <th onclick="sortTable('company')">公司 <span id="sortCompany">↕</span></th>
               <th onclick="sortTable('location')">地点 <span id="sortLocation">↕</span></th>
               <th onclick="sortTable('date')">申请日期 <span id="sortDate">↕</span></th>
+              <!-- 新增备注列 -->
+              <th>备注/标签</th>
               <th>状态</th>
               <th>操作</th>
             </tr>

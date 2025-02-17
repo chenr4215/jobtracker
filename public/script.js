@@ -69,7 +69,7 @@ async function logout() {
     }
 }
 
-// 添加职位
+// 添加职位（增加备注字段）
 async function addJob() {
     const user = firebaseApp.auth.currentUser;
     if (!user) {
@@ -81,6 +81,7 @@ async function addJob() {
     const company = document.getElementById("company").value;
     const location = document.getElementById("location").value;
     const date = document.getElementById("date").value || new Date().toISOString().split("T")[0];
+    const jobNote = document.getElementById("jobNote").value;
 
     if (!jobTitle || !company) {
         alert("职位名称和公司名称不能为空！");
@@ -93,6 +94,7 @@ async function addJob() {
         company: company,
         location: location || "未知",
         date: date,
+        note: jobNote,           // 新增备注字段
         status: "applied"
     };
 
@@ -109,7 +111,7 @@ async function addJob() {
     }
 }
 
-// 刷新职位表格
+// 刷新职位表格（新增备注列）
 function refreshTable() {
     const tbody = document.getElementById("tableBody");
     tbody.innerHTML = jobs
@@ -120,6 +122,7 @@ function refreshTable() {
                 <td>${job.company}</td>
                 <td>${job.location}</td>
                 <td>${job.date}</td>
+                <td>${job.note || ""}</td>
                 <td>
                     <button class="status-btn ${job.status}" onclick="changeStatus('${job.id}')">
                         ${getStatusText(job.status)}
@@ -182,12 +185,49 @@ function getStatusText(status) {
     return statusMap[status];
 }
 
-// 清空输入框
+// 清空输入框（新增备注清空）
 function clearInputs() {
     document.getElementById("jobTitle").value = "";
     document.getElementById("company").value = "";
     document.getElementById("location").value = "";
     document.getElementById("date").value = new Date().toISOString().split("T")[0];
+    document.getElementById("jobNote").value = "";
+}
+
+// 导出职位数据为 CSV 格式
+function exportData() {
+  // 使用 allJobs 导出所有职位数据（如果希望导出当前过滤结果，可使用 jobs 数组）
+  let data = allJobs;
+  if (!data || data.length === 0) {
+    alert("没有职位数据可导出！");
+    return;
+  }
+  
+  // CSV 文件内容，包含标题行
+  let csvContent = "data:text/csv;charset=utf-8,";
+  csvContent += "职位名称,公司,地点,申请日期,备注/标签,状态\n";
+  
+  data.forEach(job => {
+    // 构造一行数据，使用双引号包裹每个字段，避免逗号冲突
+    let row = [
+      job.title, 
+      job.company, 
+      job.location, 
+      job.date, 
+      job.note || "",
+      getStatusText(job.status)
+    ].map(item => `"${item}"`).join(",");
+    csvContent += row + "\n";
+  });
+  
+  // 编码并创建一个隐藏的下载链接
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", "jobs_export.csv");
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 // 搜索功能（使用 allJobs 备份数据过滤，不直接修改原始数据）
@@ -262,39 +302,3 @@ function updateSortArrows() {
             break;
     }
 }
-
-// 导出职位数据为 CSV 格式
-function exportData() {
-    // 使用 allJobs 导出所有职位数据（如果希望导出当前过滤结果，可使用 jobs 数组）
-    let data = allJobs;
-    if (!data || data.length === 0) {
-      alert("没有职位数据可导出！");
-      return;
-    }
-    
-    // CSV 文件内容，包含标题行
-    let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += "职位名称,公司,地点,申请日期,状态\n";
-    
-    data.forEach(job => {
-      // 构造一行数据，使用双引号包裹每个字段，避免逗号冲突
-      let row = [
-        job.title, 
-        job.company, 
-        job.location, 
-        job.date, 
-        getStatusText(job.status)
-      ].map(item => `"${item}"`).join(",");
-      csvContent += row + "\n";
-    });
-    
-    // 编码并创建一个隐藏的下载链接
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "jobs_export.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-  
