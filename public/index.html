@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>📁 职位追踪器</title>
   <link rel="stylesheet" href="style.css">
+  <!-- 添加 manifest.json 引用 -->
+  <link rel="manifest" href="manifest.json">
   <!-- Firebase 初始化脚本 -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
@@ -103,5 +105,19 @@
     </div>
   </div>
   <script src="script.js"></script>
+  <!-- 注册 Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('sw.js')
+          .then(function(registration) {
+            console.log('ServiceWorker 注册成功：', registration);
+          })
+          .catch(function(error) {
+            console.log('ServiceWorker 注册失败：', error);
+          });
+      });
+    }
+  </script>
 </body>
 </html>
