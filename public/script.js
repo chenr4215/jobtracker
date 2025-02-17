@@ -262,3 +262,39 @@ function updateSortArrows() {
             break;
     }
 }
+
+// 导出职位数据为 CSV 格式
+function exportData() {
+    // 使用 allJobs 导出所有职位数据（如果希望导出当前过滤结果，可使用 jobs 数组）
+    let data = allJobs;
+    if (!data || data.length === 0) {
+      alert("没有职位数据可导出！");
+      return;
+    }
+    
+    // CSV 文件内容，包含标题行
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "职位名称,公司,地点,申请日期,状态\n";
+    
+    data.forEach(job => {
+      // 构造一行数据，使用双引号包裹每个字段，避免逗号冲突
+      let row = [
+        job.title, 
+        job.company, 
+        job.location, 
+        job.date, 
+        getStatusText(job.status)
+      ].map(item => `"${item}"`).join(",");
+      csvContent += row + "\n";
+    });
+    
+    // 编码并创建一个隐藏的下载链接
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "jobs_export.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+  

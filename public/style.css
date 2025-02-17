@@ -11,15 +11,23 @@ body {
     min-height: 100vh;
 }
 
-/* 侧边栏 */
+/* 侧边栏样式 */
 .sidebar {
     width: 250px;
     background: linear-gradient(135deg, #00F260, #0575E6);
     padding: 20px;
     color: #fff;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
+/* 侧边栏上半部分 */
+.sidebar-top {
+    /* 内容自适应 */
+}
+
+/* Logo 样式 */
 .logo h1 {
     margin: 0;
     font-size: 1.8rem;
@@ -40,13 +48,13 @@ body {
     border-radius: 5px;
     font-size: 14px;
     cursor: pointer;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     color: #fff;
     transition: background 0.3s;
 }
 
 .auth-buttons button:hover {
-    background: rgba(255,255,255,0.25);
+    background: rgba(255, 255, 255, 0.25);
 }
 
 /* 添加职位表单 */
@@ -81,6 +89,28 @@ body {
     background: #FF4EB4;
 }
 
+/* 侧边栏下半部分：导出按钮 */
+.sidebar-bottom {
+    margin-top: auto;
+}
+
+.sidebar-bottom button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+    background: #FF6EC7;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.sidebar-bottom button:hover {
+    background: #FF4EB4;
+}
+
 /* 主内容区 */
 .main-content {
     flex: 1;
@@ -108,7 +138,7 @@ body {
     background: #fff;
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* 表格样式 */
@@ -161,48 +191,43 @@ tr:hover td {
 
 /* 响应式设计：移动端优化 */
 @media (max-width: 768px) {
-    /* 将主容器由横向布局改为垂直堆叠 */
     .container {
-      flex-direction: column;
+        flex-direction: column;
     }
     
-    /* 侧边栏调整 */
     .sidebar {
-      width: 100%;
-      padding: 15px;
-      border-right: none;
-      border-bottom: 1px solid #ddd;
+        width: 100%;
+        padding: 15px;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
     }
     
-    /* 主内容区调整 */
     .main-content {
-      width: 100%;
-      padding: 15px;
+        width: 100%;
+        padding: 15px;
     }
     
-    /* 搜索框和按钮适当缩小 */
     #search {
-      padding: 10px;
-      font-size: 1rem;
+        padding: 10px;
+        font-size: 1rem;
     }
     
     .auth-buttons button {
-      padding: 8px;
-      font-size: 14px;
+        padding: 8px;
+        font-size: 14px;
     }
     
     .form input,
     .form button {
-      padding: 8px;
-      font-size: 14px;
+        padding: 8px;
+        font-size: 14px;
     }
     
-    /* 表格和卡片容器调整 */
     .table-card {
-      padding: 15px;
+        padding: 15px;
     }
     
     table, th, td {
-      font-size: 12px;
+        font-size: 12px;
     }
-  }
+}
