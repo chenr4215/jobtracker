@@ -69,7 +69,7 @@ async function logout() {
     }
 }
 
-// 添加职位（增加备注字段）
+// 添加职位（新增文件上传功能）
 async function addJob() {
     const user = firebaseApp.auth.currentUser;
     if (!user) {
@@ -82,6 +82,8 @@ async function addJob() {
     const location = document.getElementById("location").value;
     const date = document.getElementById("date").value || new Date().toISOString().split("T")[0];
     const jobNote = document.getElementById("jobNote").value;
+    const fileInput = document.getElementById("jobFile");
+    let file = fileInput.files[0];
 
     if (!jobTitle || !company) {
         alert("职位名称和公司名称不能为空！");
@@ -94,9 +96,23 @@ async function addJob() {
         company: company,
         location: location || "未知",
         date: date,
-        note: jobNote,           // 新增备注字段
+        note: jobNote,           // 备注/标签字段
         status: "applied"
     };
+
+    // 如果选择了文件，则上传到 Firebase Storage
+    if (file) {
+        try {
+            const storage = firebaseApp.storage;
+            const fileRef = firebaseApp.storageRef(storage, `jobs/${user.uid}/${newJob.id}/${file.name}`);
+            await firebaseApp.uploadBytes(fileRef, file);
+            const downloadURL = await firebaseApp.getDownloadURL(fileRef);
+            newJob.attachment = downloadURL;
+        } catch (error) {
+            console.error("文件上传失败:", error);
+            alert("文件上传失败！");
+        }
+    }
 
     try {
         await firebaseApp.set(
@@ -111,7 +127,7 @@ async function addJob() {
     }
 }
 
-// 刷新职位表格（新增备注列）
+// 刷新职位表格（包含附件预览）
 function refreshTable() {
     const tbody = document.getElementById("tableBody");
     tbody.innerHTML = jobs
@@ -123,6 +139,7 @@ function refreshTable() {
                 <td>${job.location}</td>
                 <td>${job.date}</td>
                 <td>${job.note || ""}</td>
+                <td>${job.attachment ? `<a href="${job.attachment}" target="_blank">预览</a>` : ""}</td>
                 <td>
                     <button class="status-btn ${job.status}" onclick="changeStatus('${job.id}')">
                         ${getStatusText(job.status)}
@@ -185,13 +202,14 @@ function getStatusText(status) {
     return statusMap[status];
 }
 
-// 清空输入框（新增备注清空）
+// 清空输入框（包括文件输入）
 function clearInputs() {
     document.getElementById("jobTitle").value = "";
     document.getElementById("company").value = "";
     document.getElementById("location").value = "";
     document.getElementById("date").value = new Date().toISOString().split("T")[0];
     document.getElementById("jobNote").value = "";
+    document.getElementById("jobFile").value = "";
 }
 
 // 导出职位数据为 CSV 格式
@@ -205,7 +223,7 @@ function exportData() {
   
   // CSV 文件内容，包含标题行
   let csvContent = "data:text/csv;charset=utf-8,";
-  csvContent += "职位名称,公司,地点,申请日期,备注/标签,状态\n";
+  csvContent += "职位名称,公司,地点,申请日期,备注/标签,附件,状态\n";
   
   data.forEach(job => {
     // 构造一行数据，使用双引号包裹每个字段，避免逗号冲突
@@ -215,6 +233,7 @@ function exportData() {
       job.location, 
       job.date, 
       job.note || "",
+      job.attachment ? "附件已上传" : "",
       getStatusText(job.status)
     ].map(item => `"${item}"`).join(",");
     csvContent += row + "\n";

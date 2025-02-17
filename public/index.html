@@ -10,6 +10,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
     import { getDatabase, ref, set, onValue, remove, update } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-database.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDO5mM8eJYe-KRenku_B_mu8j6coaCnsCI",
@@ -25,9 +26,25 @@
     const db = getDatabase(app);
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
+    const storage = getStorage(app);
 
     // 挂载到全局对象，方便在其他脚本中调用
-    window.firebaseApp = { db, auth, provider, ref, set, onValue, remove, update, signInWithPopup, signOut };
+    window.firebaseApp = { 
+      db, 
+      auth, 
+      provider, 
+      ref, 
+      set, 
+      onValue, 
+      remove, 
+      update, 
+      signInWithPopup, 
+      signOut,
+      storage,
+      storageRef,
+      uploadBytes,
+      getDownloadURL
+    };
     console.log("Firebase 初始化完成");
   </script>
 </head>
@@ -50,8 +67,10 @@
           <input type="text" id="company" placeholder="公司名称" required>
           <input type="text" id="location" placeholder="地点">
           <input type="date" id="date">
-          <!-- 新增：备注输入区域 -->
+          <!-- 新增：备注/标签 -->
           <textarea id="jobNote" placeholder="备注/标签 (可选)"></textarea>
+          <!-- 新增：文件上传控件 -->
+          <input type="file" id="jobFile" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
           <button onclick="addJob()">➕ 添加职位</button>
         </div>
       </div>
@@ -72,8 +91,8 @@
               <th onclick="sortTable('company')">公司 <span id="sortCompany">↕</span></th>
               <th onclick="sortTable('location')">地点 <span id="sortLocation">↕</span></th>
               <th onclick="sortTable('date')">申请日期 <span id="sortDate">↕</span></th>
-              <!-- 新增备注列 -->
               <th>备注/标签</th>
+              <th>附件</th>
               <th>状态</th>
               <th>操作</th>
             </tr>
