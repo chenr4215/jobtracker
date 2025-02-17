@@ -139,6 +139,7 @@ body {
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
 }
 
 /* 表格样式 */
@@ -146,12 +147,15 @@ table {
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
+    min-width: 600px;
+    table-layout: fixed;
 }
 
 th, td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #eee;
+    white-space: nowrap;
 }
 
 th {
