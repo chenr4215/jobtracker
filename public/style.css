@@ -158,3 +158,51 @@ tr:hover td {
 .status-btn.interview { background: #FF9800; }
 .status-btn.rejected { background: #F44336; }
 .status-btn.accepted { background: #4CAF50; }
+
+/* 响应式设计：移动端优化 */
+@media (max-width: 768px) {
+    /* 将主容器由横向布局改为垂直堆叠 */
+    .container {
+      flex-direction: column;
+    }
+    
+    /* 侧边栏调整 */
+    .sidebar {
+      width: 100%;
+      padding: 15px;
+      border-right: none;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    /* 主内容区调整 */
+    .main-content {
+      width: 100%;
+      padding: 15px;
+    }
+    
+    /* 搜索框和按钮适当缩小 */
+    #search {
+      padding: 10px;
+      font-size: 1rem;
+    }
+    
+    .auth-buttons button {
+      padding: 8px;
+      font-size: 14px;
+    }
+    
+    .form input,
+    .form button {
+      padding: 8px;
+      font-size: 14px;
+    }
+    
+    /* 表格和卡片容器调整 */
+    .table-card {
+      padding: 15px;
+    }
+    
+    table, th, td {
+      font-size: 12px;
+    }
+  }
