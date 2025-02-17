@@ -321,3 +321,171 @@ function updateSortArrows() {
             break;
     }
 }
+
+
+// 存储离线新增的职位
+let offlineJobs = []; 
+
+// 启动时尝试从 localStorage 读取数据
+window.addEventListener('load', () => {
+  loadLocalData();
+  checkOnlineStatus();
+});
+
+// 监听网络状态
+window.addEventListener('online', () => {
+  console.log('网络恢复在线');
+  syncOfflineJobs();  // 同步离线新增的职位到 Firebase
+  loadJobs(firebaseApp.auth.currentUser?.uid); // 重新加载最新职位数据
+});
+
+window.addEventListener('offline', () => {
+  console.log('当前处于离线状态');
+});
+
+// ----------------------
+// 1. 本地存储相关函数
+// ----------------------
+function saveLocalData() {
+  // 将 allJobs 和 offlineJobs 都存到 localStorage
+  localStorage.setItem('allJobs', JSON.stringify(allJobs));
+  localStorage.setItem('offlineJobs', JSON.stringify(offlineJobs));
+}
+
+function loadLocalData() {
+  // 从 localStorage 加载
+  const storedAllJobs = localStorage.getItem('allJobs');
+  const storedOfflineJobs = localStorage.getItem('offlineJobs');
+
+  if (storedAllJobs) {
+    allJobs = JSON.parse(storedAllJobs);
+    jobs = allJobs.slice(); // 复制给 jobs
+    refreshTable();
+  }
+
+  if (storedOfflineJobs) {
+    offlineJobs = JSON.parse(storedOfflineJobs);
+  }
+}
+
+// ----------------------
+// 2. 检查网络状态
+// ----------------------
+function checkOnlineStatus() {
+  if (navigator.onLine) {
+    console.log("当前在线");
+  } else {
+    console.log("当前离线");
+  }
+}
+
+// ----------------------
+// 3. 离线时新增职位
+// ----------------------
+async function addJob() {
+  const user = firebaseApp.auth.currentUser;
+  if (!user) {
+    alert("请先登录！");
+    return;
+  }
+
+  const jobTitle = document.getElementById("jobTitle").value;
+  const company = document.getElementById("company").value;
+  const location = document.getElementById("location").value;
+  const date = document.getElementById("date").value || new Date().toISOString().split("T")[0];
+  const jobNote = document.getElementById("jobNote").value;
+  const fileInput = document.getElementById("jobFile");
+  let file = fileInput.files[0];
+
+  if (!jobTitle || !company) {
+    alert("职位名称和公司名称不能为空！");
+    return;
+  }
+
+  const newJob = {
+    id: Date.now(),
+    title: jobTitle,
+    company: company,
+    location: location || "未知",
+    date: date,
+    note: jobNote,
+    status: "applied"
+    // attachment: 等待上传
+  };
+
+  // 如果选择了文件，需要处理文件上传
+  // 若离线，无法上传 => 这里仅演示记录文件名
+  if (file) {
+    newJob.attachmentName = file.name;
+  }
+
+  // 如果当前在线，直接走原逻辑
+  if (navigator.onLine) {
+    try {
+      // 先上传附件 => 省略
+      // 再写入 Firebase
+      await firebaseApp.set(
+        firebaseApp.ref(firebaseApp.db, `jobs/${user.uid}/${newJob.id}`),
+        newJob
+      );
+      console.log("职位添加成功:", newJob);
+      loadJobs(user.uid); // 重新从 Firebase 获取最新数据
+    } catch (error) {
+      console.error("数据保存失败:", error);
+    }
+  } else {
+    // 如果离线，先存到 offlineJobs，等网络恢复后再统一同步
+    offlineJobs.push(newJob);
+    allJobs.push(newJob);
+    jobs = allJobs.slice();
+    refreshTable();
+    console.log("当前离线，已暂存职位:", newJob);
+    saveLocalData(); // 更新 localStorage
+  }
+
+  clearInputs();
+}
+
+// ----------------------
+// 4. 同步离线职位到 Firebase
+// ----------------------
+async function syncOfflineJobs() {
+  const user = firebaseApp.auth.currentUser;
+  if (!user || offlineJobs.length === 0) return;
+
+  console.log("开始同步离线职位:", offlineJobs);
+  for (let job of offlineJobs) {
+    try {
+      // 如果 job.attachmentName 存在，说明有文件要上传
+      // 这里略去演示，需要自己写 upload 逻辑
+      await firebaseApp.set(
+        firebaseApp.ref(firebaseApp.db, `jobs/${user.uid}/${job.id}`),
+        job
+      );
+      console.log("离线职位同步成功:", job);
+    } catch (error) {
+      console.error("离线职位同步失败:", error);
+    }
+  }
+
+  // 同步完成后清空 offlineJobs
+  offlineJobs = [];
+  saveLocalData();
+  console.log("离线职位全部同步完成");
+}
+
+// ----------------------
+// 5. 从 Firebase 加载职位
+// ----------------------
+function loadJobs(userId) {
+  if (!userId) return;
+  const jobsRef = firebaseApp.ref(firebaseApp.db, `jobs/${userId}`);
+  firebaseApp.onValue(jobsRef, (snapshot) => {
+    const data = snapshot.val();
+    allJobs = data ? Object.values(data) : [];
+    jobs = allJobs.slice();
+    console.log("加载职位数据:", jobs);
+    refreshTable();
+    saveLocalData(); // 每次获取最新数据后，也保存一份到本地
+  });
+}
