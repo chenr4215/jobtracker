@@ -2,7 +2,8 @@
 body {
     font-family: 'Inter', sans-serif;
     margin: 0;
-    background: #F0F2F5;
+    background: rgb(213,211,204); /* 主页面背景 */
+    color: #333;
 }
 
 /* 主容器布局 */
@@ -11,19 +12,21 @@ body {
     min-height: 100vh;
 }
 
-/* 侧边栏样式 */
+/* 侧边栏样式（固定侧边栏） */
 .sidebar {
     position: fixed;
     top: 0;
     left: 0;
-    height: 100vh;
     width: 250px;
-    background: linear-gradient(135deg, #00F260, #0575E6);
+    height: 100vh;
+    background: rgb(36,45,59); /* 侧边栏背景 */
     padding: 20px;
     color: #fff;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
+    z-index: 1000;
 }
 
 /* 侧边栏上半部分 */
@@ -36,6 +39,7 @@ body {
     margin: 0;
     font-size: 1.8rem;
     text-align: center;
+    color: #fff;
 }
 
 /* 登录/注销按钮 */
@@ -52,13 +56,13 @@ body {
     border-radius: 5px;
     font-size: 14px;
     cursor: pointer;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgb(120,54,57); /* 按钮背景 */
     color: #fff;
     transition: background 0.3s;
 }
 
 .auth-buttons button:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgb(140,74,77); /* 悬停时变深 */
 }
 
 /* 添加职位表单 */
@@ -70,27 +74,43 @@ body {
 }
 
 .form input,
+.form textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+    color: #333;
+    background: #fff;
+}
+
+.form input:focus,
+.form textarea:focus {
+    outline: none;
+    border-color: #aaa;
+}
+
 .form button {
     padding: 10px;
     border: none;
     border-radius: 5px;
     font-size: 14px;
     box-sizing: border-box;
-}
-
-.form input {
-    outline: none;
-}
-
-.form button {
-    background: #FF6EC7;
+    background: rgb(120,54,57);
     color: #fff;
     cursor: pointer;
     transition: background 0.3s;
 }
 
 .form button:hover {
-    background: #FF4EB4;
+    background: rgb(140,74,77);
+}
+
+/* 文件上传控件 */
+.form input[type="file"] {
+    margin: 10px 0;
+    font-size: 14px;
+    color: #333;
 }
 
 /* 侧边栏下半部分：导出按钮 */
@@ -105,14 +125,14 @@ body {
     border-radius: 5px;
     font-size: 14px;
     box-sizing: border-box;
-    background: #FF6EC7;
+    background: rgb(120,54,57);
     color: #fff;
     cursor: pointer;
     transition: background 0.3s;
 }
 
 .sidebar-bottom button:hover {
-    background: #FF4EB4;
+    background: rgb(140,74,77);
 }
 
 /* 主内容区 */
@@ -120,11 +140,14 @@ body {
     margin-left: 250px;
     padding: 30px;
     box-sizing: border-box;
+    background: rgb(213,211,204); /* 主页面背景 */
+    color: #333;
 }
 
 .main-content h1 {
     margin-top: 0;
     font-size: 2rem;
+    color: #333;
 }
 
 /* 搜索框 */
@@ -135,6 +158,8 @@ body {
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 1rem;
+    color: #333;
+    background: #fff;
 }
 
 /* 表格卡片容器 */
@@ -142,7 +167,7 @@ body {
     background: #fff;
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
     overflow-x: auto;
 }
 
@@ -158,23 +183,24 @@ table {
 th, td {
     padding: 12px;
     text-align: left;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #e0e0e0;
     white-space: normal;
 }
 
 th {
-    background: #f9f9f9;
+    background: #f8f8f8;
     cursor: pointer;
     user-select: none;
     transition: background 0.3s;
+    color: #333;
 }
 
 th:hover {
-    background: #f1f1f1;
+    background: #f0f0f0;
 }
 
 tr:hover td {
-    background: #fafafa;
+    background: #f5f5f5;
 }
 
 /* 状态按钮 */
@@ -192,10 +218,10 @@ tr:hover td {
     transform: scale(1.05);
 }
 
-.status-btn.applied { background: #2196F3; }
+.status-btn.applied { background: rgb(36,45,59); }
 .status-btn.interview { background: #FF9800; }
-.status-btn.rejected { background: #F44336; }
-.status-btn.accepted { background: #4CAF50; }
+.status-btn.rejected { background: #d9534f; }
+.status-btn.accepted { background: #5cb85c; }
 
 /* 响应式设计：移动端优化 */
 @media (max-width: 768px) {
@@ -208,10 +234,12 @@ tr:hover td {
         padding: 15px;
         border-right: none;
         border-bottom: 1px solid #ddd;
+        position: relative;
+        height: auto;
     }
     
     .main-content {
-        width: 100%;
+        margin-left: 0;
         padding: 15px;
     }
     
@@ -238,30 +266,4 @@ tr:hover td {
     table, th, td {
         font-size: 12px;
     }
-}
-
-.form textarea {
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    box-sizing: border-box;
-    resize: vertical;
-    min-height: 60px;
-}
-
-.form textarea {
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    box-sizing: border-box;
-    resize: vertical;
-    min-height: 60px;
-}
-
-.form input[type="file"] {
-    margin: 10px 0;
-    font-size: 14px;
-    color: #333;
 }
