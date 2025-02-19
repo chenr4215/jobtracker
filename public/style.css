@@ -153,6 +153,8 @@ body {
 /* 搜索框 */
 #search {
     width: 100%;
+    box-sizing: border-box; /* 确保内边距不会超出100% */
+    margin-bottom: 20px;    /* 与表格保持一定间距 */
     padding: 12px;
     margin-bottom: 20px;
     border: 1px solid #ddd;
@@ -211,7 +213,7 @@ tr:hover td {
     cursor: pointer;
     font-weight: 600;
     transition: transform 0.2s;
-    color: #fff;
+    color: #ffffff;
 }
 
 .status-btn:hover {
